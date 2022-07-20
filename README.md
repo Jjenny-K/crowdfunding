@@ -1,7 +1,7 @@
 # Crowdfunding
 원티드 프리온보딩 코스 선발과제를 기준으로 DRF RE-REVIEW
 
-### Progress check [GoTo](https://round-locust-fc4.notion.site/crowdfunding-b915554e142343cda700efc6a5ac7e77)
+### Progress check
 - 요구사항 분석, 정보 기록 및 프로젝트 진행을 위해 사용
 
 ## Task interpretation
@@ -38,7 +38,7 @@
 <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=Python&logoColor=white"/> <img src="https://img.shields.io/badge/Django-092E20?style=flat-square&logo=Django&logoColor=white"/>
 
 ### Development Period
-* 2022.06.06 - 
+* 2022.07.20 - 
 
 > ### ERD
 
