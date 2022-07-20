@@ -1,7 +1,7 @@
 # Crowdfunding
 원티드 프리온보딩 코스 선발과제를 기준으로 DRF RE-REVIEW
 
-### Progress check
+### Progress check ~~[GoTo]~~
 - 요구사항 분석, 정보 기록 및 프로젝트 진행을 위해 사용
 
 ## Task interpretation
@@ -35,7 +35,7 @@
 ## Implementation
 
 ### Tech Stack
-<img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=Python&logoColor=white"/> <img src="https://img.shields.io/badge/Django-092E20?style=flat-square&logo=Django&logoColor=white"/>
+<img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=Python&logoColor=white"/> <img src="https://img.shields.io/badge/Django-092E20?style=flat-square&logo=Django&logoColor=white"/> <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=PostgreSQL&logoColor=white"/>
 
 ### Development Period
 * 2022.07.20 - 
