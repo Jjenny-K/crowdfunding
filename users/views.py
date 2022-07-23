@@ -37,10 +37,7 @@ class UserViewset(viewsets.GenericViewSet,
 
     @action(methods=['post'], detail=False)
     def login(self, request):
-        serializer = self.get_serializer().validate(request.data)
-
-        # 입력된 데이터에 해당하는 사용자가 없을 경우 예외처리
-        if serializer is None:
-            return Response({'error_message': '이메일이나 비밀번호를 확인하세요.'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
