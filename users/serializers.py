@@ -54,10 +54,10 @@ class UserLoginSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = {
+        fields = (
             'email',
             'username',
-        }
+        )
         read_only_fields = (
             'email',
         )
