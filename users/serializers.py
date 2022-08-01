@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.utils.timezone import now
 
@@ -27,6 +28,17 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
         return user
 
+    def validate(self, data):
+        email = data.get('email', None)
+
+        if User.objects.filter(email=email).exists():
+            # 입력된 데이터에 해당하는 사용자가 있을 경우 예외처리
+            raise serializers.ValidationError(
+                '이미 가입된 이메일입니다.'
+            )
+
+        return data
+
 
 class UserLoginSerializer(serializers.Serializer):
     """ 로그인 serializer """
@@ -39,8 +51,8 @@ class UserLoginSerializer(serializers.Serializer):
 
         user = authenticate(username=email, password=password)
 
-        # 입력된 데이터에 해당하는 사용자가 없을 경우 예외처리
         if user is None:
+            # 입력된 데이터에 해당하는 사용자가 없을 경우 예외처리
             raise serializers.ValidationError(
                 '이메일이나 비밀번호를 확인하세요.'
             )
@@ -48,7 +60,15 @@ class UserLoginSerializer(serializers.Serializer):
             user.last_login = now()
             user.save(update_fields=['last_login'])
 
-            return user
+            token = RefreshToken.for_user(user)
+            refresh = str(token)
+            access = str(token.access_token)
+
+            data = {'user': user,
+                    'access': access,
+                    'refresh': refresh}
+
+            return data
 
 
 class UserSerializer(serializers.ModelSerializer):

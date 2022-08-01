@@ -1,6 +1,7 @@
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from users.models import User
 from users.serializers import UserSignupSerializer, UserLoginSerializer, UserSerializer
@@ -25,19 +26,25 @@ class UserViewset(viewsets.GenericViewSet,
     def signup(self, request):
         serializer = self.get_serializer(data=request.data)
 
-        # 입력된 데이터가 지정된 형식과 다를 경우 예외처리
-        if not serializer.is_valid(raise_exception=True):
-            return Response({'error_message': '입력된 데이터의 형식을 확인하세요.'}, status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.save()
 
-        if User.objects.filter(email=serializer.validated_data['email']).first() is None:
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            token = RefreshToken.for_user(user)
+            refresh = str(token)
+            access = str(token.access_token)
 
-        return Response({'error_message': '이미 가입된 이메일입니다.'}, status=status.HTTP_409_CONFLICT)
+            data = {'user': UserSerializer(user, context=self.get_serializer_context()).data,
+                    'access': access,
+                    'refresh': refresh}
+
+            return Response(data, status=status.HTTP_201_CREATED)
 
     @action(methods=['post'], detail=False)
     def login(self, request):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if serializer.is_valid(raise_exception=True):
+            data = {'user': serializer.validated_data['user'].email,
+                    'access': serializer.validated_data['access'],
+                    'refresh': serializer.validated_data['refresh']}
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(data, status=status.HTTP_200_OK)
