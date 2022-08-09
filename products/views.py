@@ -1,12 +1,16 @@
 from django.shortcuts import get_list_or_404, get_object_or_404
 from rest_framework import views, status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from products.models import Product, Funding
 from products.serializers import ProductSerializer
+from users.permissions import IsOwnerOrReadOnly, ProductIsOwnerOrReadOnly
 
 
 class ProductListViews(views.APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
     def get_list(self):
         return get_list_or_404(Product)
 
@@ -19,10 +23,11 @@ class ProductListViews(views.APIView):
 
     def post(self, request):
         """ POST api/products """
+        request.data['user'] = request.user.id
         serializer = ProductSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save(user=self.request.user)
+            serializer.save()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -30,6 +35,8 @@ class ProductListViews(views.APIView):
 
 
 class ProductDetailView(views.APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly, ProductIsOwnerOrReadOnly]
+
     def get_object(self, pk):
         return get_object_or_404(Product, id=pk)
 

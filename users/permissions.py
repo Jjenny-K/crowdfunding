@@ -8,3 +8,12 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
             return True
 
         return obj.email == request.user.email
+
+
+class ProductIsOwnerOrReadOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            # GET, HEAD, OPTIONS 요청의 경우 허용
+            return True
+
+        return obj.user.email == request.user.email
