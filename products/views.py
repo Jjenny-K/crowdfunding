@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from products.models import Product, Funding
-from products.serializers import ProductSerializer
+from products.serializers import ProductListSerializer, ProductCreateSerializer, ProductDetailSerializer
 from users.permissions import IsOwnerOrReadOnly, ProductIsOwnerOrReadOnly
 
 
@@ -17,14 +17,14 @@ class ProductListViews(views.APIView):
     def get(self, request):
         """ GET api/products """
         products = self.get_list()
-        serializer = ProductSerializer(products, many=True)
+        serializer = ProductListSerializer(products, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         """ POST api/products """
         request.data['user'] = request.user.id
-        serializer = ProductSerializer(data=request.data)
+        serializer = ProductCreateSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()
@@ -43,23 +43,24 @@ class ProductDetailView(views.APIView):
     def get(self, request, pk):
         """ GET api/products/:pk """
         product = self.get_object(pk)
-        serializer = ProductSerializer(product)
+        serializer = ProductDetailSerializer(product)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk):
         """ PUT api/products/:pk """
         product = self.get_object(pk)
-        serializer = ProductSerializer(product, data=request.data)
+        serializer = ProductDetailSerializer(product, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        return Response(serializer.errors, status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
+        """ DELETE api/products/:pk """
         product = self.get_object(pk)
 
         if product is not None:
