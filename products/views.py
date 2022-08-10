@@ -1,22 +1,33 @@
 from django.shortcuts import get_list_or_404, get_object_or_404
+from django.db.models import Q
 from rest_framework import views, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from products.models import Product, Funding
 from products.serializers import ProductListSerializer, ProductCreateSerializer, ProductDetailSerializer
+from products.utils import RequestHandler
 from users.permissions import IsOwnerOrReadOnly, ProductIsOwnerOrReadOnly
 
 
-class ProductListViews(views.APIView):
+class ProductListViews(views.APIView, RequestHandler):
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-
-    def get_list(self):
-        return get_list_or_404(Product)
 
     def get(self, request):
         """ GET api/products """
-        products = self.get_list()
+        query = Q()
+        search, sort = self._request_param(request)
+
+        if search:
+            # 파라미터 중 search가 있을 때, 상품명 like 검색
+            query &= Q(name__icontains=search)
+
+        products = Product.objects.filter(query)
+
+        if sort:
+            # 파라미터 중 sort가 있을 때, 상품 목록 정렬
+            products = products.order_by(sort)
+
         serializer = ProductListSerializer(products, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
