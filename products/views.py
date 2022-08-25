@@ -33,11 +33,18 @@ class ProductListViews(views.APIView, RequestHandler):
 
     def post(self, request):
         """ POST api/products """
-        request.data['user'] = request.user.id
         serializer = ProductCreateSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save()
+            # 로그인된 사용자 정보를 추가해 Product 생성
+            Product.objects.create(
+                user_id=request.user.id,
+                name=request.data['name'],
+                description=request.data['description'],
+                target_fund=request.data['target_fund'],
+                fund_per_once=request.data['fund_per_once'],
+                end_date=request.data['end_date'],
+            )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
