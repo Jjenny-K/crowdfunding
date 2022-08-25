@@ -1,7 +1,7 @@
 from rest_framework import permissions
 
 
-class IsOwnerOrReadOnly(permissions.BasePermission):
+class ProductIsOwnerOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             # GET, HEAD, OPTIONS 요청의 경우 허용
@@ -18,8 +18,8 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
             return True
 
         if request.user.is_authenticated:
-            if hasattr(obj, 'email'):
-                return obj.email == request.user.email
+            if hasattr(obj.user, 'email'):
+                return obj.user.email == request.user.email
             else:
                 return False
 

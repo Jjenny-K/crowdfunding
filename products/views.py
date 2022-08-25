@@ -2,16 +2,15 @@ from django.shortcuts import get_list_or_404, get_object_or_404
 from django.db.models import Q
 from rest_framework import views, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from products.models import Product, Funding
 from products.serializers import ProductListSerializer, ProductCreateSerializer, ProductDetailSerializer
 from products.utils import RequestHandler
-from users.permissions import IsOwnerOrReadOnly, ProductIsOwnerOrReadOnly
+from products.permissions import ProductIsOwnerOrReadOnly
 
 
 class ProductListViews(views.APIView, RequestHandler):
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = (ProductIsOwnerOrReadOnly,)
 
     def get(self, request):
         """ GET api/products """
@@ -46,7 +45,7 @@ class ProductListViews(views.APIView, RequestHandler):
 
 
 class ProductDetailView(views.APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly, ProductIsOwnerOrReadOnly]
+    permission_classes = (ProductIsOwnerOrReadOnly,)
 
     def get_object(self, pk):
         return get_object_or_404(Product, id=pk)
