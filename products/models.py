@@ -16,7 +16,7 @@ class Product(TimestampZone):
     @property
     def achievement_rate(self):
         """ 달성률 """
-        return self.total_fund // self.target_fund * 100 if self.target_fund != 0 else 0
+        return f'{self.total_fund / self.target_fund * 100 if self.target_fund != 0 else 0: .0f}%'
 
     @property
     def d_day(self):

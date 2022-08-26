@@ -1,6 +1,3 @@
-from django.db.models import Q
-
-
 class RequestHandler:
     def _request_param(self, request):
         """ 파라미터 값 변수화 """
