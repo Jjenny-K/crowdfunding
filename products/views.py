@@ -1,12 +1,15 @@
-from django.shortcuts import get_list_or_404, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from rest_framework import views, status
+from rest_framework import views, generics, status
 from rest_framework.response import Response
 
 from products.models import Product, Funding
-from products.serializers import ProductListSerializer, ProductCreateSerializer, ProductDetailSerializer
+from products.serializers import ProductListSerializer, \
+                                 ProductCreateSerializer, \
+                                 ProductDetailSerializer, \
+                                 FundingSerializer
 from products.utils import RequestHandler
-from products.permissions import ProductIsOwnerOrReadOnly
+from products.permissions import ProductIsOwnerOrReadOnly, FundingIsOwner
 
 
 class ProductListViews(views.APIView, RequestHandler):
@@ -86,3 +89,37 @@ class ProductDetailView(views.APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProductFundingView(generics.ListCreateAPIView):
+    queryset = Funding.objects.all()
+    serializer_class = FundingSerializer
+    permission_classes = (FundingIsOwner,)
+
+    def create(self, request, pk, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            # 로그인된 사용자 정보를 추가해 Funding 등록
+            Funding.objects.create(
+                user_id=request.user.id,
+                product_id=pk,
+            )
+
+            # 해당 Product total_fund 수정
+            product = Product.objects.get(id=pk)
+            fund_per_once = product.fund_per_once
+
+            product.total_fund += fund_per_once
+            product.save(update_fields=['total_fund'])
+
+            return Response({'message': '펀딩에 성공하였습니다.'}, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, pk, *args, **kwargs):
+        # 로그인된 사용자 본인의 펀딩 내역만 조회
+        query = Q(product=pk) & Q(user=request.user)
+        self.queryset = Funding.objects.filter(query)
+
+        return super().list(request, *args, **kwargs)

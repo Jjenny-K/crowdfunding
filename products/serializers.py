@@ -60,3 +60,17 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
     def get_participants(self, obj):
         return Funding.objects.filter(product_id=obj.id).count()
+
+
+class FundingSerializer(serializers.ModelSerializer):
+    """ 상품 펀딩 serializer """
+    product_name = serializers.ReadOnlyField(source='product.name')
+
+    class Meta:
+        model = Funding
+        fields = (
+            'product_name',
+        )
+        read_only_fields = (
+            'product_name',
+        )

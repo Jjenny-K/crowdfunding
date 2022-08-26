@@ -24,3 +24,20 @@ class ProductIsOwnerOrReadOnly(permissions.BasePermission):
                 return False
 
         return False
+
+
+class FundingIsOwner(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_authenticated:
+            return True
+        else:
+            return False
+
+    def has_object_permission(self, request, view, obj):
+        if request.user.is_authenticated:
+            if hasattr(obj.user, 'email'):
+                return obj.user.email == request.user.email
+            else:
+                return False
+
+        return False
