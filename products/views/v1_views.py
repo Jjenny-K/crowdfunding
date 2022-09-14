@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from rest_framework import views, generics, status
+from rest_framework import views, status
 from rest_framework.response import Response
 
 from products.models import Product, Funding
@@ -91,13 +91,32 @@ class ProductDetailView(views.APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProductFundingView(generics.ListCreateAPIView):
-    queryset = Funding.objects.all()
-    serializer_class = FundingSerializer
+class ProductFundingView(views.APIView):
     permission_classes = (FundingIsOwner,)
+    
+    def get_object(self, pk):
+        return get_object_or_404(Product, id=pk)
 
-    def create(self, request, pk, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+    def get(self, request, pk):
+        """ GET api/product/:pk/funding """
+
+        # pk 값과 맞는 product object 조회
+        product = self.get_object(pk)
+
+        # 로그인된 사용자 본인의 펀딩 내역만 조회
+        query = Q(product=pk) & Q(user=request.user)
+        fundings = Funding.objects.filter(query)
+
+        serializer = FundingSerializer(fundings, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, pk):
+        """ POST api/product/:pk/funding """
+        # pk 값과 맞는 product object 조회
+        product = self.get_object(pk)
+
+        serializer = FundingSerializer(data=request.data)
 
         if serializer.is_valid():
             # 로그인된 사용자 정보를 추가해 Funding 등록
@@ -107,7 +126,6 @@ class ProductFundingView(generics.ListCreateAPIView):
             )
 
             # 해당 Product total_fund 수정
-            product = Product.objects.get(id=pk)
             fund_per_once = product.fund_per_once
 
             product.total_fund += fund_per_once
@@ -116,10 +134,3 @@ class ProductFundingView(generics.ListCreateAPIView):
             return Response({'message': '펀딩에 성공하였습니다.'}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def list(self, request, pk, *args, **kwargs):
-        # 로그인된 사용자 본인의 펀딩 내역만 조회
-        query = Q(product=pk) & Q(user=request.user)
-        self.queryset = Funding.objects.filter(query)
-
-        return super().list(request, *args, **kwargs)
