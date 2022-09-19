@@ -94,7 +94,7 @@ class ProductDetailView(views.APIView):
 class ProductFundingView(views.APIView):
     permission_classes = (FundingIsOwner,)
     
-    def get_object(self, pk):
+    def get_product(self, pk):
         return get_object_or_404(Product, id=pk)
 
     def get(self, request, pk):
@@ -114,7 +114,7 @@ class ProductFundingView(views.APIView):
     def post(self, request, pk):
         """ POST api/product/:pk/funding """
         # pk 값과 맞는 product object 조회
-        product = self.get_object(pk)
+        product = self.get_product(pk)
 
         serializer = FundingSerializer(data=request.data)
 
