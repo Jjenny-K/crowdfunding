@@ -1,9 +1,11 @@
 import pytest
+from pytest_factoryboy import register
 
 from django.core.management import call_command
 from rest_framework.test import APIClient
 
 from users.models import User
+from users.tests.factories import UserFactory
 
 
 @pytest.fixture(scope='session')
@@ -15,6 +17,9 @@ def django_db_setup(django_db_setup, django_db_blocker):
 @pytest.fixture()
 def client():
     return APIClient()
+
+
+register(UserFactory)
 
 
 @pytest.fixture()

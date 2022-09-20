@@ -19,7 +19,7 @@ product_funding = ProductViewSet.as_view({
 })
 
 urlpatterns = [
-    path('products', product_list),
-    path('products/<int:pk>', product_detail),
-    path('products/<int:pk>/funding', product_funding),
+    path('products', product_list, name='product-list'),
+    path('products/<int:pk>', product_detail, name='product-detail'),
+    path('products/<int:pk>/funding', product_funding, name='product-funding'),
 ]
