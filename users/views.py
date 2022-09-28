@@ -1,7 +1,6 @@
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 
 from users.models import User
@@ -37,17 +36,11 @@ class UserViewset(viewsets.GenericViewSet,
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
-            user = serializer.save()
+            serializer.save()
 
-            token = RefreshToken.for_user(user)
-            refresh = str(token)
-            access = str(token.access_token)
+            return Response({'message': f'{serializer.data["username"]}님 가입을 환영합니다.'}, status=status.HTTP_201_CREATED)
 
-            data = {'user': UserSerializer(user, context=self.get_serializer_context()).data,
-                    'access': access,
-                    'refresh': refresh}
-
-            return Response(data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['post'], detail=False)
     def login(self, request):
