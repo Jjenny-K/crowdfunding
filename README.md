@@ -1,6 +1,8 @@
 # Crowdfunding
 원티드 프리온보딩 코스 선발과제를 기준으로 DRF RE-REVIEW
 
+### Deploy [GoTo](http://52.78.203.26/api/users/signup)
+
 ### Progress check [GoTo](https://round-locust-fc4.notion.site/crowdfunding-b915554e142343cda700efc6a5ac7e77)
 - 요구사항 분석, 관련 정보 및 프로젝트 상세 진행사항 기록을 위해 사용
 
@@ -35,10 +37,11 @@
 ## Implementation
 
 ### Tech Stack
-<img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=Python&logoColor=white"/> <img src="https://img.shields.io/badge/Django-092E20?style=flat-square&logo=Django&logoColor=white"/> <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=PostgreSQL&logoColor=white"/> <img src="https://img.shields.io/badge/PyCharm-000000?style=flat-square&logo=PyCharm&logoColor=white"/> <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=Docker&logoColor=white"/>
+<img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=Python&logoColor=white"/> <img src="https://img.shields.io/badge/Django-092E20?style=flat-square&logo=Django&logoColor=white"/> <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=PostgreSQL&logoColor=white"/> <img src="https://img.shields.io/badge/PyCharm-000000?style=flat-square&logo=PyCharm&logoColor=white"/> <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=Docker&logoColor=white"/> <img src="https://img.shields.io/badge/AWS EC2-FF9900?style=flat-square&logo=Amazon EC2&logoColor=white"/>
 
 ### Development Period
-* 2022.07. - 2022.09
+* 2022.07 - 2022.09
+* 2022.11 (코드 배포)
 
 > ### ERD
 <img src="./source/erd.png" alt="erd">
@@ -49,7 +52,7 @@
 - 다양한 View를 이용한 RESTful API 구현
     - ViewSet을 이용한 사용자 API 구현
         - 사용자 회원가입, 로그인, 로그아웃 구현
-            - simplejwt를 이용해 token을 발행
+            - simplejwt를 이용해 token 발행으로 사용자 인증
             - permission customizing을 통한 사용자 접근 권한을 부여
         - 사용자 정보 수정 및 삭제 구현
             - 로그인 시 발행된 access_token으로 인증하지 않을 경우 401 error 리턴
@@ -63,7 +66,7 @@
 - Pytest를 이용한 test code 작성
     - factoryboy, faker를 사용하여 임의 데이터 생성해 model test code 작성
     - 사용자 본인을 인증할 수 있을 때, 없을 때를 나누어 test code 작성
-- Gunigorn, Nginx 적용 및 Docker 이용한 배포 세팅 설정
+- Gunigorn, Nginx 적용 및 Docker, AWS EC2 이용한 배포
 - Postman을 이용한 API 명세서 작성
 
 ### Step to run
