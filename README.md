@@ -82,11 +82,11 @@ $ git clone https://github.com/Jjenny-K/crowdfunding.git
 
 2-2. .env 파일을 root directory에 생성 후, 프로젝트, PostgerSQL과 연동을 위한 정보를 저장합니다.
 ```
-SECRET_KEY='[SECRET_KEY]'
+SECRET_KEY='{SECRET_KEY}'
 
-DB_NAME='[local database name]'
-DB_USER='[local database user]'
-DB_PASS='[local database password]'
+DB_NAME='{local database name}'
+DB_USER='{local database user}'
+DB_PASS='{local database password}'
 DB_HOST='localhost'
 ```
 
@@ -115,12 +115,12 @@ $ git clone https://github.com/Jjenny-K/crowdfunding.git
 
 2. .env 파일을 root directory에 생성 후, 프로젝트, PostgerSQL과 연동을 위한 정보를 저장합니다.
 ```
-SECRET_KEY='[SECRET_KEY]'
+SECRET_KEY='{SECRET_KEY}'
 
-POSTGRES_DB=[container database name]'
-POSTGRES_USER='[container database user]'
-POSTGRES_PASSWORD='[container database password]'
-POSTGERS_HOST='[server host ip]'
+POSTGRES_DB='{container database name}'
+POSTGRES_USER='{container database user}'
+POSTGRES_PASSWORD='{container database password}'
+POSTGERS_HOST='{server host ip}'
 ```
 
 3. nginx/conf.d/default/conf 파일 내 server_name을 배포용 ip로 변경합니다.
