@@ -3,7 +3,7 @@
 
 ### Deploy [GoTo](http://52.78.203.26/api/users/signup)
 
-### Progress check [GoTo](https://round-locust-fc4.notion.site/crowdfunding-b915554e142343cda700efc6a5ac7e77)
+### Progress check [GoTo](https://jjenny-k.notion.site/crowdfunding-b915554e142343cda700efc6a5ac7e77)
 - 요구사항 분석, 관련 정보 및 프로젝트 상세 진행사항 기록을 위해 사용
 
 ## Task interpretation
